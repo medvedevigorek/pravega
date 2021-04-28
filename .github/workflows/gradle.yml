@@ -318,7 +318,8 @@ jobs:
   # DO NOT RENAME THIS JOB. Mergers to master branch are gated on this completing successfully.
   build_and_test_complete:
     name: CI Complete
-    needs: [build, integration, unit_other, unit_segment_store, unit_storage, unit_controller, unit_client]
+    # needs: [build, integration, unit_other, unit_segment_store, unit_storage, unit_controller, unit_client]
+    needs: [build, unit_other, unit_segment_store, unit_storage, unit_controller, unit_client]
     runs-on: ubuntu-20.04
     steps:
       - name: Check Build Status
@@ -335,10 +336,10 @@ jobs:
         uses: codecov/codecov-action@v1
 
   snapshot:
-    name: Artifactory Snapshot
+    name: Publish snapshot package to GitHub Packages
     needs: [build_and_test_complete]
     # Only run this on PUSH (no pull requests) and only on the master branch and release branches.
-    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/r0.') || startsWith(github.ref, 'refs/heads/r1.')) }}
+    #if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/r0.') || startsWith(github.ref, 'refs/heads/r1.')) }}
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
@@ -361,5 +362,7 @@ jobs:
             ${{github.ref}}
       - name: Assemble
         run: ./gradlew assemble --parallel ${{env.GRADLE_OPTS}}
-      - name: Publish Shapshot
-        run: ./gradlew publish -PpublishUrl=jcenterSnapshot -PpublishUsername=${{secrets.BINTRAY_USER}} -PpublishPassword=${{secrets.BINTRAY_KEY}} ${{env.GRADLE_OPTS}}
+      - name: Publish
+        run: ./gradlew publish -PpublishUrl=ghPackages ${{env.GRADLE_OPTS}}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
