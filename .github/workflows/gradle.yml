@@ -363,6 +363,6 @@ jobs:
       - name: Assemble
         run: ./gradlew assemble --parallel ${{env.GRADLE_OPTS}}
       - name: Publish
-        run: ./gradlew publish -PpublishUrl=ghPackages ${{env.GRADLE_OPTS}}
+        run: ./gradlew publish -PpublishUrl=ghPackages -PpublishUsername=${{env.GITHUB_ACTOR}} -PpublishPassword=${{secrets.GITHUB_TOKEN}} ${{env.GRADLE_OPTS}}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
