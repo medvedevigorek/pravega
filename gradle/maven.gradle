@@ -34,6 +34,13 @@ plugins.withId('maven') {
                             }
                         }
                     }
+                    else if (publishUrl == "ghPackages") {
+                        repository(url: "https://maven.pkg.github.com/" + publishRepository) {
+                            if (project.hasProperty("publishUsername") && project.hasProperty("publishPassword")) {
+                                authentication(userName: publishUsername, password: publishPassword)
+                            }
+                        }
+                    }
                     else {
                         repository(url: publishUrl) {
                             // Only configure credentials if they are provided (allows publishing to the filesystem)
