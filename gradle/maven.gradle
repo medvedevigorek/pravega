@@ -35,7 +35,7 @@ plugins.withId('maven') {
                         }
                     }
                     else if (publishUrl == "ghPackages") {
-                        repository(url: "https://maven.pkg.github.com/medvedevigorek/pravega") {
+                        repository(url: "https://maven.pkg.github.com/" + publishRepository) {
                             if (project.hasProperty("publishUsername") && project.hasProperty("publishPassword")) {
                                 authentication(userName: publishUsername, password: publishPassword)
                             }
